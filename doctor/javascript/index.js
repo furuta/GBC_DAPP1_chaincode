@@ -4,7 +4,7 @@
 
 'use strict';
 
-const Doctor = require('./lib/doctor');
+const FabCar = require('./lib/fabcar');
 
-module.exports.Doctor = Doctor;
-module.exports.contracts = [ Doctor ];
+module.exports.FabCar = FabCar;
+module.exports.contracts = [ FabCar ];
