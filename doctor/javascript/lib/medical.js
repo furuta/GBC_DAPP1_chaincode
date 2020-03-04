@@ -6,23 +6,77 @@
 
 const { Contract } = require('fabric-contract-api');
 
-class FabCar extends Contract {
+class Medical extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
-        const records = [
+        const cars = [
             {
-                date: '2020/01/01 10:00:00',
-                doctor: 'doctor1',
-                patient: 'patient1',
-                information: 'fracture',
+                color: 'blue',
+                make: 'Toyota',
+                model: 'Prius',
+                owner: 'Tomoko',
+            },
+            {
+                color: 'red',
+                make: 'Ford',
+                model: 'Mustang',
+                owner: 'Brad',
+            },
+            {
+                color: 'green',
+                make: 'Hyundai',
+                model: 'Tucson',
+                owner: 'Jin Soo',
+            },
+            {
+                color: 'yellow',
+                make: 'Volkswagen',
+                model: 'Passat',
+                owner: 'Max',
+            },
+            {
+                color: 'black',
+                make: 'Tesla',
+                model: 'S',
+                owner: 'Adriana',
+            },
+            {
+                color: 'purple',
+                make: 'Peugeot',
+                model: '205',
+                owner: 'Michel',
+            },
+            {
+                color: 'white',
+                make: 'Chery',
+                model: 'S22L',
+                owner: 'Aarav',
+            },
+            {
+                color: 'violet',
+                make: 'Fiat',
+                model: 'Punto',
+                owner: 'Pari',
+            },
+            {
+                color: 'indigo',
+                make: 'Tata',
+                model: 'Nano',
+                owner: 'Valeria',
+            },
+            {
+                color: 'brown',
+                make: 'Holden',
+                model: 'Barina',
+                owner: 'Shotaro',
             },
         ];
 
-        for (let i = 0; i < records.length; i++) {
-            records[i].docType = 'record';
-            await ctx.stub.putState('Record' + i, Buffer.from(JSON.stringify(records[i])));
-            console.info('Added <--> ', records[i]);
+        for (let i = 0; i < cars.length; i++) {
+            cars[i].docType = 'car';
+            await ctx.stub.putState('CAR' + i, Buffer.from(JSON.stringify(cars[i])));
+            console.info('Added <--> ', cars[i]);
         }
         console.info('============= END : Initialize Ledger ===========');
     }
@@ -36,18 +90,19 @@ class FabCar extends Contract {
         return carAsBytes.toString();
     }
 
-    async createMedicalRecord(ctx, id, date, doctor, patient, information) {
-        console.info('============= START : Create Medical Record ===========');
+    async createCar(ctx, carNumber, make, model, color, owner) {
+        console.info('============= START : Create Car ===========');
 
-        const record = {
-            date,
-            doctor,
-            patient,
-            information,
+        const car = {
+            color,
+            docType: 'car',
+            make,
+            model,
+            owner,
         };
 
-        await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
-        console.info('============= END : Create Medical Record ===========');
+        await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));
+        console.info('============= END : Create Car ===========');
     }
 
     async queryAllCars(ctx) {
@@ -83,60 +138,6 @@ class FabCar extends Contract {
         console.info('============= END : changeCarOwner ===========');
     }
 
-    // =========================================================================================
-    // getQueryResultForQueryString executes the passed in query string.
-    // Result set is built and returned as a byte array containing the JSON results.
-    // =========================================================================================
-    async getQueryResultForQueryString(stub, queryString, thisClass) {
-
-        console.info('- getQueryResultForQueryString queryString:\n' + queryString)
-        let resultsIterator = await stub.getQueryResult(queryString);
-        let method = thisClass['getAllResults'];
-
-        let results = await method(resultsIterator, false);
-
-        return Buffer.from(JSON.stringify(results));
-    }
-
-    async getAllResults(iterator, isHistory) {
-        let allResults = [];
-        while (true) {
-            let res = await iterator.next();
-    
-            if (res.value && res.value.value.toString()) {
-                let jsonRes = {};
-                console.log(res.value.value.toString('utf8'));
-        
-                if (isHistory && isHistory === true) {
-                    jsonRes.TxId = res.value.tx_id;
-                    jsonRes.Timestamp = res.value.timestamp;
-                    jsonRes.IsDelete = res.value.is_delete.toString();
-                    try {
-                        jsonRes.Value = JSON.parse(res.value.value.toString('utf8'));
-                    } catch (err) {
-                        console.log(err);
-                        jsonRes.Value = res.value.value.toString('utf8');
-                    }
-                } else {
-                    jsonRes.Key = res.value.key;
-                    try {
-                        jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-                    } catch (err) {
-                        console.log(err);
-                        jsonRes.Record = res.value.value.toString('utf8');
-                    }
-                }
-                allResults.push(jsonRes);
-            }
-            if (res.done) {
-                console.log('end of data');
-                await iterator.close();
-                console.info(allResults);
-                return allResults;
-            }
-        }
-    }
-
 }
 
-module.exports = FabCar;
+module.exports = Medical;
