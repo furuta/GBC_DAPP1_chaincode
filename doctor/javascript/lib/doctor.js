@@ -6,7 +6,7 @@
 
 const { Contract } = require('fabric-contract-api');
 
-class Medical extends Contract {
+class Doctor extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
@@ -140,4 +140,4 @@ class Medical extends Contract {
 
 }
 
-module.exports = Medical;
+module.exports = Doctor;

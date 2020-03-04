@@ -4,7 +4,7 @@
 
 'use strict';
 
-const Medical = require('./lib/medical');
+const Doctor = require('./lib/doctor');
 
-module.exports.Medical = Medical;
-module.exports.contracts = [ Medical ];
+module.exports.Doctor = Doctor;
+module.exports.contracts = [ Doctor ];
