@@ -6,77 +6,35 @@
 
 const { Contract } = require('fabric-contract-api');
 
-class FabCar extends Contract {
+class Doctor extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
-        const cars = [
+        const records = [
             {
-                color: 'blue1',
-                make: 'Toyota1',
-                model: 'Prius1',
-                owner: 'Tomoko1',
+                date: '2020/01/01 12:00:00',
+                doctor: 'Doctor_1',
+                patient: 'Patient_1',
+                information: 'fracture',
             },
             {
-                color: 'red',
-                make: 'Ford',
-                model: 'Mustang',
-                owner: 'Brad',
+                date: '2020/01/01 12:00:00',
+                doctor: 'Doctor_2',
+                patient: 'Patient_2',
+                information: 'fracture',
             },
             {
-                color: 'green',
-                make: 'Hyundai',
-                model: 'Tucson',
-                owner: 'Jin Soo',
-            },
-            {
-                color: 'yellow',
-                make: 'Volkswagen',
-                model: 'Passat',
-                owner: 'Max',
-            },
-            {
-                color: 'black',
-                make: 'Tesla',
-                model: 'S',
-                owner: 'Adriana',
-            },
-            {
-                color: 'purple',
-                make: 'Peugeot',
-                model: '205',
-                owner: 'Michel',
-            },
-            {
-                color: 'white',
-                make: 'Chery',
-                model: 'S22L',
-                owner: 'Aarav',
-            },
-            {
-                color: 'violet',
-                make: 'Fiat',
-                model: 'Punto',
-                owner: 'Pari',
-            },
-            {
-                color: 'indigo',
-                make: 'Tata',
-                model: 'Nano',
-                owner: 'Valeria',
-            },
-            {
-                color: 'brown',
-                make: 'Holden',
-                model: 'Barina',
-                owner: 'Shotaro',
+                date: '2020/01/01 12:00:00',
+                doctor: 'Doctor_1',
+                patient: 'Patient_3',
+                information: 'fracture',
             },
         ];
 
-        for (let i = 0; i < cars.length; i++) {
-            cars[i].docType = 'car';
-            await ctx.stub.putState('CAR' + i, Buffer.from(JSON.stringify(cars[i])));
-            console.info('Added <--> ', cars[i]);
+        for (let i = 0; i < records.length; i++) {
+            records[i].docType = 'record';
+            await ctx.stub.putState('Record' + i, Buffer.from(JSON.stringify(records[i])));
+            console.info('Added <--> ', records[i]);
         }
         console.info('============= END : Initialize Ledger ===========');
     }
@@ -153,4 +111,4 @@ class FabCar extends Contract {
 
 }
 
-module.exports = FabCar;
+module.exports = Doctor;
