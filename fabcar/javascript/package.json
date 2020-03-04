@@ -1,7 +1,7 @@
 {
-    "name": "doctor",
+    "name": "fabcar",
     "version": "1.0.0",
-    "description": "Doctor contract implemented in JavaScript",
+    "description": "FabCar contract implemented in JavaScript",
     "main": "index.js",
     "engines": {
         "node": ">=8",
