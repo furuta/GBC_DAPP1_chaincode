@@ -48,8 +48,15 @@ class Doctor extends Contract {
         return carAsBytes.toString();
     }
 
-    async createCar(ctx, carNumber, make, model, color, owner) {
+    async createRecord(ctx, carNumber, make, model, color, owner) {
         console.info('============= START : Create Car ===========');
+        const attr = ctx.stub.getAttributeValue();
+        console.log(attr);
+        // if (!ctx.stub.assertAttributeValue('hf.role', 'doctor')) {
+        //     console.error('Only doctor can create record');
+        //     return false;
+        // }
+        // proceed to carry out auditing
 
         const car = {
             color,
@@ -64,6 +71,11 @@ class Doctor extends Contract {
     }
 
     async queryAllCars(ctx) {
+        const id = ctx.stub.getID();
+        console.log(id)
+        const attr = ctx.stub.getAttributeValue();
+        console.log(attr);
+
         const startKey = 'CAR0';
         const endKey = 'CAR999';
 
