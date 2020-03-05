@@ -5,6 +5,7 @@
 'use strict';
 
 const { Contract } = require('fabric-contract-api');
+const ClientIdentity = require('fabric-shim').ClientIdentity;
 
 class Doctor extends Contract {
 
@@ -71,13 +72,15 @@ class Doctor extends Contract {
     }
 
     async queryAllCars(ctx) {
-        const id = ctx.stub.getID();
+        console.log('===== START : queryAllCars =====')
+        let cid = new ClientIdentity(ctx.stub);
+        const id = cid.getID();
         console.log(id)
-        const attr = ctx.stub.getAttributeValue();
+        const attr = cid.getAttributeValue();
         console.log(attr);
 
-        const startKey = 'CAR0';
-        const endKey = 'CAR999';
+        const startKey = 'Record0';
+        const endKey = 'Record999';
 
         const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
