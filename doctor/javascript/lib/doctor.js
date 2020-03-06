@@ -71,6 +71,19 @@ class Doctor extends Contract {
         console.info('============= END : Create Car ===========');
     }
 
+    async getUserId(ctx) {
+        let cid = new ClientIdentity(ctx.stub);
+        const id = cid.getID();
+
+        return id.toString();
+    }
+    async getUserAttr(ctx) {
+        let cid = new ClientIdentity(ctx.stub);
+        const attr = cid.getAttributeValue();
+
+        return attr.toString();
+    }
+    
     async queryAllCars(ctx) {
         console.log('===== START : queryAllCars =====')
         let cid = new ClientIdentity(ctx.stub);
