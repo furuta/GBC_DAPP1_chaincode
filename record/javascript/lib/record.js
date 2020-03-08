@@ -266,102 +266,97 @@ class Record extends Contract {
 
 
 
-    async queryCar(ctx, carNumber) {
-        const carAsBytes = await ctx.stub.getState(carNumber);
-        if (!carAsBytes || carAsBytes.length === 0) {
-            throw new Error(`${carNumber} does not exist`);
-        }
-        console.log(carAsBytes.toString());
-        return carAsBytes.toString();
-    }
+    // async queryCar(ctx, carNumber) {
+    //     const carAsBytes = await ctx.stub.getState(carNumber);
+    //     if (!carAsBytes || carAsBytes.length === 0) {
+    //         throw new Error(`${carNumber} does not exist`);
+    //     }
+    //     console.log(carAsBytes.toString());
+    //     return carAsBytes.toString();
+    // }
 
-    async createRecord(ctx, carNumber, make, model, color, owner) {
-        console.info('============= START : Create Car ===========');
-        const attr = ctx.stub.getAttributeValue();
-        console.log(attr);
-        // if (!ctx.stub.assertAttributeValue('hf.role', 'doctor')) {
-        //     console.error('Only doctor can create record');
-        //     return false;
-        // }
-        // proceed to carry out auditing
+    // async createRecord(ctx, carNumber, make, model, color, owner) {
+    //     console.info('============= START : Create Car ===========');
+    //     const attr = ctx.stub.getAttributeValue();
+    //     console.log(attr);
+    //     // if (!ctx.stub.assertAttributeValue('hf.role', 'doctor')) {
+    //     //     console.error('Only doctor can create record');
+    //     //     return false;
+    //     // }
+    //     // proceed to carry out auditing
 
-        const car = {
-            color,
-            docType: 'car',
-            make,
-            model,
-            owner,
-        };
+    //     const car = {
+    //         color,
+    //         docType: 'car',
+    //         make,
+    //         model,
+    //         owner,
+    //     };
 
-        await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));
-        console.info('============= END : Create Car ===========');
-    }
+    //     await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));
+    //     console.info('============= END : Create Car ===========');
+    // }
 
-    async getUserId(ctx) {
-        let cid = new ClientIdentity(ctx.stub);
-        const id = cid.getID();
+    // async getUserId(ctx) {
+    //     let cid = new ClientIdentity(ctx.stub);
+    //     const id = cid.getID();
 
-        return id;
-    }
-    async getUserAttr(ctx) {
-        let cid = new ClientIdentity(ctx.stusb);
-        const role = cid.getAttributeValue('role');
+    //     return id;
+    // }
+    // async getUserAttr(ctx) {
+    //     let cid = new ClientIdentity(ctx.stusb);
+    //     const role = cid.getAttributeValue('role');
 
-        return role;
-    }
+    //     return role;
+    // }
     
-    async queryAllCars(ctx, id) {
-        console.log('===== START : queryAllCars =====')
-        let cid = new ClientIdentity(ctx.stub);
-        const id = cid.getID();
-        console.log(id)
-        const attr = cid.getAttributeValue();
-        console.log(attr);
+    // async queryAllCars(ctx, id) {
+    //     console.log('===== START : queryAllCars =====')
 
-        const startKey = 'Record0';
-        const endKey = 'Record999';
+    //     const startKey = 'Record0';
+    //     const endKey = 'Record999';
 
-        const iterator = await ctx.stub.getStateByRange(startKey, endKey);
+    //     const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
-        const allResults = [];
-        while (true) {
-            const res = await iterator.next();
+    //     const allResults = [];
+    //     while (true) {
+    //         const res = await iterator.next();
 
-            if (res.value && res.value.value.toString()) {
-                console.log(res.value.value.toString('utf8'));
+    //         if (res.value && res.value.value.toString()) {
+    //             console.log(res.value.value.toString('utf8'));
 
-                const Key = res.value.key;
-                let Record;
-                try {
-                    Record = JSON.parse(res.value.value.toString('utf8'));
-                } catch (err) {
-                    console.log(err);
-                    Record = res.value.value.toString('utf8');
-                }
-                allResults.push({ Key, Record });
-            }
-            if (res.done) {
-                console.log('end of data');
-                await iterator.close();
-                console.info(allResults);
-                return JSON.stringify(allResults);
-            }
-        }
-    }
+    //             const Key = res.value.key;
+    //             let Record;
+    //             try {
+    //                 Record = JSON.parse(res.value.value.toString('utf8'));
+    //             } catch (err) {
+    //                 console.log(err);
+    //                 Record = res.value.value.toString('utf8');
+    //             }
+    //             allResults.push({ Key, Record });
+    //         }
+    //         if (res.done) {
+    //             console.log('end of data');
+    //             await iterator.close();
+    //             console.info(allResults);
+    //             return JSON.stringify(allResults);
+    //         }
+    //     }
+    // }
 
-    async changeCarOwner(ctx, carNumber, newOwner) {
-        console.info('============= START : changeCarOwner ===========');
+    // async changeCarOwner(ctx, carNumber, newOwner) {
+    //     console.info('============= START : changeCarOwner ===========');
 
-        const carAsBytes = await ctx.stub.getState(carNumber);
-        if (!carAsBytes || carAsBytes.length === 0) {
-            throw new Error(`${carNumber} does not exist`);
-        }
-        const car = JSON.parse(carAsBytes.toString());
-        car.owner = newOwner;
+    //     const carAsBytes = await ctx.stub.getState(carNumber);
+    //     if (!carAsBytes || carAsBytes.length === 0) {
+    //         throw new Error(`${carNumber} does not exist`);
+    //     }
+    //     const car = JSON.parse(carAsBytes.toString());
+    //     car.owner = newOwner;
 
-        await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));
-        console.info('============= END : changeCarOwner ===========');
-    }
+    //     await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));
+    //     console.info('============= END : changeCarOwner ===========');
+    // }
 
 }
 
