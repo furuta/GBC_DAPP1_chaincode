@@ -90,14 +90,14 @@ class Record extends Contract {
         console.info('============= END : Initialize Ledger ===========');
     }
 
-    async createPatientRecord(ctx){
-        const caller = 'doctor_test1';
+    async createPatientRecord(ctx, id){
+        // const id = 'doctor_test1';
         const record = {
             access_list: [],
             medical_info: []
         }
 
-        await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
+        await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
         return true
     }
