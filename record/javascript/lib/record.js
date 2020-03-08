@@ -90,175 +90,175 @@ class Record extends Contract {
         console.info('============= END : Initialize Ledger ===========');
     }
 
-    async createPatientRecord(ctx, id){
-        // const id = 'doctor_test1';
-        const record = {
-            access_list: [],
-            medical_info: []
-        }
+    // async createPatientRecord(ctx, id){
+    //     // const id = 'doctor_test1';
+    //     const record = {
+    //         access_list: [],
+    //         medical_info: []
+    //     }
 
-        await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
+    //     await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
-        return true
-    }
+    //     return true
+    // }
 
-    async createDoctorRecord(){}
+    // async createDoctorRecord(){}
 
-    async writePatientRecord(ctx, patientId, info){
-        const caller = 'doctor_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(patientId);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${patientId} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async writePatientRecord(ctx, patientId, info){
+    //     const caller = 'doctor_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(patientId);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${patientId} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        // Check permission
-        const permission = record.access_list.filter(access => {
-            return access.id == caller;
-        });
-        if (!permission || permission.length === 0) {
-            throw new Error(`${caller} is not allowed to modify the record`);
-        }
+    //     // Check permission
+    //     const permission = record.access_list.filter(access => {
+    //         return access.id == caller;
+    //     });
+    //     if (!permission || permission.length === 0) {
+    //         throw new Error(`${caller} is not allowed to modify the record`);
+    //     }
         
-        // Write record
-        var now = new Date();
-        const medical_info = {
-            date: now.format("yyyy/MM/dd HH:mm"),
-            writer_id: caller,
-            information: info,
-        }
-        record.medical_info.push(medical_info);
+    //     // Write record
+    //     var now = new Date();
+    //     const medical_info = {
+    //         date: now.format("yyyy/MM/dd HH:mm"),
+    //         writer_id: caller,
+    //         information: info,
+    //     }
+    //     record.medical_info.push(medical_info);
 
-        await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
-    }
+    //     await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
+    // }
 
-    async getMyMedicalInfo(ctx){
-        const caller = 'user_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(caller);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${caller} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async getMyMedicalInfo(ctx){
+    //     const caller = 'user_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(caller);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${caller} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        return JSON.stringify(record.medical_info);
-    }
+    //     return JSON.stringify(record.medical_info);
+    // }
 
-    async getMedicalInfoByPatientId(patientId){
-        const caller = 'doctor_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(patientId);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${patientId} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async getMedicalInfoByPatientId(patientId){
+    //     const caller = 'doctor_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(patientId);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${patientId} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        // Check permission
-        const permission = record.access_list.filter(access => {
-            return access.id == caller;
-        });
-        if (!permission || permission.length === 0) {
-            throw new Error(`${caller} is not allowed to modify the record`);
-        }
+    //     // Check permission
+    //     const permission = record.access_list.filter(access => {
+    //         return access.id == caller;
+    //     });
+    //     if (!permission || permission.length === 0) {
+    //         throw new Error(`${caller} is not allowed to modify the record`);
+    //     }
 
-        return JSON.stringify(record.medical_info);
-    }
+    //     return JSON.stringify(record.medical_info);
+    // }
 
-    async getDoctorList(){
-        //  *all doctor role users*
-        const caller = 'user_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(caller);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${caller} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async getDoctorList(){
+    //     //  *all doctor role users*
+    //     const caller = 'user_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(caller);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${caller} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        // Filter doctors
-        const doctors = record.access_list.filter(access => {
-            return access.role == 'doctor';
-        });
+    //     // Filter doctors
+    //     const doctors = record.access_list.filter(access => {
+    //         return access.role == 'doctor';
+    //     });
 
-        return JSON.stringify(doctors);
-    }
+    //     return JSON.stringify(doctors);
+    // }
 
-    async getAccessList(){
-        // *all permission users*
-        const caller = 'user_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(caller);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${caller} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async getAccessList(){
+    //     // *all permission users*
+    //     const caller = 'user_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(caller);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${caller} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        return JSON.stringify(record.access_list);
-    }
+    //     return JSON.stringify(record.access_list);
+    // }
 
-    async checkMyPermissionStatus(patientId){
-        // *check if I’m allowed by patientID*
-        const caller = 'doctor_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(patientId);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${patientId} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async checkMyPermissionStatus(patientId){
+    //     // *check if I’m allowed by patientID*
+    //     const caller = 'doctor_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(patientId);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${patientId} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        // Check permission
-        const permission = record.access_list.filter(access => {
-            return access.id == caller;
-        });
-        if (!permission || permission.length === 0) {
-            return false
-        }
+    //     // Check permission
+    //     const permission = record.access_list.filter(access => {
+    //         return access.id == caller;
+    //     });
+    //     if (!permission || permission.length === 0) {
+    //         return false
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
-    async addPermission(id, role){
-        const caller = 'user_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(caller);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${caller} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async addPermission(id, role){
+    //     const caller = 'user_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(caller);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${caller} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        // Add permission
-        const permission = record.access_list.filter(access => {
-            return access.id == id;
-        });
-        if (!permission || permission.length === 0) {
-            record.access_list.push = {
-                role: role,
-                id: id,
-            }
-        }
+    //     // Add permission
+    //     const permission = record.access_list.filter(access => {
+    //         return access.id == id;
+    //     });
+    //     if (!permission || permission.length === 0) {
+    //         record.access_list.push = {
+    //             role: role,
+    //             id: id,
+    //         }
+    //     }
 
-        await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
-        return true;
-    }
+    //     await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
+    //     return true;
+    // }
 
-    async deletePermission(id){
-        const caller = 'user_test1';
-        // Get record
-        const recordAsByte = await ctx.stub.getState(caller);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${caller} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    // async deletePermission(id){
+    //     const caller = 'user_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(caller);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${caller} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        // Delete permission
-        const permission = record.access_list.filter(access => {
-            return access.id != id;
-        });
-        record.access_list = permission;
+    //     // Delete permission
+    //     const permission = record.access_list.filter(access => {
+    //         return access.id != id;
+    //     });
+    //     record.access_list = permission;
 
-        await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
-        return true;
-    }
+    //     await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
+    //     return true;
+    // }
 
 
 
