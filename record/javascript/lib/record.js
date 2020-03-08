@@ -115,7 +115,7 @@ class Record extends Contract {
 
         // Check permission
         const permission = record.access_list.filter(access => {
-            access.id == caller
+            return access.id == caller;
         });
         if (!permission || permission.length === 0) {
             throw new Error(`${caller} is not allowed to modify the record`);
@@ -156,7 +156,7 @@ class Record extends Contract {
 
         // Check permission
         const permission = record.access_list.filter(access => {
-            access.id == caller
+            return access.id == caller;
         });
         if (!permission || permission.length === 0) {
             throw new Error(`${caller} is not allowed to modify the record`);
@@ -177,7 +177,7 @@ class Record extends Contract {
 
         // Filter doctors
         const doctors = record.access_list.filter(access => {
-            access.role == 'doctor'
+            return access.role == 'doctor';
         });
 
         return JSON.stringify(doctors);
@@ -208,7 +208,7 @@ class Record extends Contract {
 
         // Check permission
         const permission = record.access_list.filter(access => {
-            access.id == caller
+            return access.id == caller;
         });
         if (!permission || permission.length === 0) {
             return false
@@ -228,7 +228,7 @@ class Record extends Contract {
 
         // Add permission
         const permission = record.access_list.filter(access => {
-            access.id == id
+            return access.id == id;
         });
         if (!permission || permission.length === 0) {
             record.access_list.push = {
@@ -241,7 +241,7 @@ class Record extends Contract {
         return true;
     }
 
-    async deletePermission(ID){
+    async deletePermission(id){
         const caller = 'user_test1';
         // Get record
         const recordAsByte = await ctx.stub.getState(caller);
@@ -252,7 +252,7 @@ class Record extends Contract {
 
         // Delete permission
         const permission = record.access_list.filter(access => {
-            access.id != id
+            return access.id != id;
         });
         record.access_list = permission;
 
