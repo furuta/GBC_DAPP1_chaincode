@@ -106,9 +106,10 @@ class Record extends Contract {
         // record.docType = 'record';
 
         let cid = new ClientIdentity(ctx.stub);
-        const idString = cid.getID();
-        const idParams = idString.split('::');
-        const id = idParams.split('CN=')[1];
+        const id = cid.getID();
+        // const idString = cid.getID();
+        // const idParams = idString.split('::');
+        // const id = idParams.split('CN=')[1];
 
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
@@ -318,7 +319,7 @@ class Record extends Contract {
     async getUserId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
         const idString = cid.getID();
-        const idParams = idString.split('::');
+        const idParams = idString.toString().split('::');
         const id = idParams.split('CN=')[1];
 
         // "x509::{subject DN}::{issuer DN}"
