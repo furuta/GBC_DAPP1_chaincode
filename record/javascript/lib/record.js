@@ -98,17 +98,14 @@ class Record extends Contract {
     }
 
     async createPatientRecord(ctx, patient_id){
-        // const dummy = 'user_dummy1';
         const record = {
-            docType: 'record',
-            access_list: [{}],
-            allowed_list: [{}],
-            medical_info: [{}],
+            access_list: [],
+            allowed_list: [],
+            medical_info: [],
         }
+        record.docType = 'record';
 
-        return await ctx.stub.putState(patient_id, Buffer.from(JSON.stringify(record)));
-
-        // return patient_id
+        await ctx.stub.putState(patient_id, Buffer.from(JSON.stringify(record)));
     }
 
     // async createDoctorRecord(){}
@@ -154,25 +151,25 @@ class Record extends Contract {
     //     return JSON.stringify(record.medical_info);
     // }
 
-    // async getMedicalInfoByPatientId(patientId){
-    //     const caller = 'doctor_test1';
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(patientId);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${patientId} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+    async getMedicalInfoByPatientId(patientId){
+        const caller = 'doctor_test1';
+        // Get record
+        const recordAsByte = await ctx.stub.getState(patientId);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${patientId} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
 
-    //     // Check permission
-    //     const permission = record.access_list.filter(access => {
-    //         return access.id == caller;
-    //     });
-    //     if (!permission || permission.length === 0) {
-    //         throw new Error(`${caller} is not allowed to modify the record`);
-    //     }
+        // Check permission
+        const permission = record.access_list.filter(access => {
+            return access.id == caller;
+        });
+        if (!permission || permission.length === 0) {
+            throw new Error(`${caller} is not allowed to modify the record`);
+        }
 
-    //     return JSON.stringify(record.medical_info);
-    // }
+        return JSON.stringify(record.medical_info);
+    }
 
     // async getDoctorList(){
     //     //  *all doctor role users*
@@ -306,12 +303,20 @@ class Record extends Contract {
     //     console.info('============= END : Create Car ===========');
     // }
 
-    // async getUserId(ctx) {
-    //     let cid = new ClientIdentity(ctx.stub);
-    //     const id = cid.getID();
+    async getUserId(ctx) {
+        let cid = new ClientIdentity(ctx.stub);
+        const id = cid.getID();
 
-    //     return id;
-    // }
+        return id;
+    }
+
+    async getId(ctx) {
+        let cid = new ClientIdentity(ctx.stub);
+        const id = cid.getMSPID();
+
+        return id;
+    }
+
     // async getUserAttr(ctx) {
     //     let cid = new ClientIdentity(ctx.stusb);
     //     const role = cid.getAttributeValue('role');
