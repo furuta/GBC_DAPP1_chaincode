@@ -151,7 +151,7 @@ class Record extends Contract {
     //     return JSON.stringify(record.medical_info);
     // }
 
-    async getMedicalInfoByPatientId(patientId){
+    async getMedicalInfoByPatientId(ctx, patientId){
         const caller = 'doctor_test1';
         // Get record
         const recordAsByte = await ctx.stub.getState(patientId);
@@ -171,7 +171,7 @@ class Record extends Contract {
         return JSON.stringify(record.medical_info);
     }
 
-    // async getDoctorList(){
+    // async getDoctorList(ctx){
     //     //  *all doctor role users*
     //     const caller = 'user_test1';
     //     // Get record
@@ -189,7 +189,7 @@ class Record extends Contract {
     //     return JSON.stringify(doctors);
     // }
 
-    // async getAccessList(){
+    // async getAccessList(ctx){
     //     // *all permission users*
     //     const caller = 'user_test1';
     //     // Get record
@@ -202,7 +202,7 @@ class Record extends Contract {
     //     return JSON.stringify(record.access_list);
     // }
 
-    // async checkMyPermissionStatus(patientId){
+    // async checkMyPermissionStatus(ctx, patientId){
     //     // *check if I’m allowed by patientID*
     //     const caller = 'doctor_test1';
     //     // Get record
@@ -223,7 +223,7 @@ class Record extends Contract {
     //     return true;
     // }
 
-    // async addPermission(id, role){
+    // async addPermission(ctx, id, role){
     //     const caller = 'user_test1';
     //     // Get record
     //     const recordAsByte = await ctx.stub.getState(caller);
@@ -247,7 +247,7 @@ class Record extends Contract {
     //     return true;
     // }
 
-    // async deletePermission(id){
+    // async deletePermission(ctx, id){
     //     const caller = 'user_test1';
     //     // Get record
     //     const recordAsByte = await ctx.stub.getState(caller);
