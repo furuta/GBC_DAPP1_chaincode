@@ -105,7 +105,10 @@ class Record extends Contract {
         }
         record.docType = 'record';
 
-        await ctx.stub.putState(patient_id, Buffer.from(JSON.stringify(record)));
+        let cid = new ClientIdentity(ctx.stub);
+        const id, err = cid.getID();
+
+        await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
     }
 
     // async createDoctorRecord(){}
@@ -304,7 +307,13 @@ class Record extends Contract {
 
     async getUserId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
-        const id = cid.getID();
+        const id, err = cid.getID();
+        // "x509::{subject DN}::{issuer DN}"
+        // x509
+        // ::
+        // /OU=client/OU=org1/OU=department1/CN=user_test2
+        // ::
+        // /C=US/ST=California/L=San Francisco/O=org1.example.com/CN=ca.org1.example.com
 
         return id.toString('utf8');
     }
