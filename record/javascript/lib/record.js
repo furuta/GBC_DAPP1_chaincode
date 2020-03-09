@@ -90,7 +90,7 @@ class Record extends Contract {
         ];
 
         for (let i = 0; i < records.length; i++) {
-            records[i].value.docType = 'record';
+            // records[i].value.docType = 'record';
             await ctx.stub.putState(records[i].user_id, Buffer.from(JSON.stringify(records[i].value)));
             console.info('Added <--> ', records[i]);
         }
@@ -103,10 +103,10 @@ class Record extends Contract {
             allowed_list: [],
             medical_info: [],
         }
-        record.docType = 'record';
+        // record.docType = 'record';
 
         let cid = new ClientIdentity(ctx.stub);
-        const id, err = cid.getID();
+        const id = cid.getID();
 
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
@@ -115,34 +115,40 @@ class Record extends Contract {
 
     // async createDoctorRecord(){}
 
-    // async writePatientRecord(ctx, patientId, info){
-    //     const caller = 'doctor_test1';
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(patientId);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${patientId} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+    async writePatientRecord(ctx, patientId, info){
+        const caller = 'doctor_test1';
 
-    //     // Check permission
-    //     const permission = record.access_list.filter(access => {
-    //         return access.id == caller;
-    //     });
-    //     if (!permission || permission.length === 0) {
-    //         throw new Error(`${caller} is not allowed to modify the record`);
-    //     }
+        let cid = new ClientIdentity(ctx.stub);
+        if (!cid.assertAttributeValue("role", "doctor")) {
+            throw new Error('Only doctor can write recored');
+        }
+
+        // Get record
+        const recordAsByte = await ctx.stub.getState(patientId);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${patientId} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
+
+        // Check permission
+        const permission = record.access_list.filter(access => {
+            return access.id == caller;
+        });
+        if (!permission || permission.length === 0) {
+            throw new Error(`${caller} is not allowed to modify the record`);
+        }
         
-    //     // Write record
-    //     var now = new Date();
-    //     const medical_info = {
-    //         date: now.format("yyyy/MM/dd HH:mm"),
-    //         writer_id: caller,
-    //         information: info,
-    //     }
-    //     record.medical_info.push(medical_info);
+        // Write record
+        var now = new Date();
+        const medical_info = {
+            date: now.format("yyyy/MM/dd HH:mm"),
+            writer_id: caller,
+            information: info,
+        }
+        record.medical_info.push(medical_info);
 
-    //     await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
-    // }
+        await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
+    }
 
     // async getMyMedicalInfo(ctx){
     //     const caller = 'user_test1';
