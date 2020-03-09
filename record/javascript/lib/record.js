@@ -91,16 +91,16 @@ class Record extends Contract {
     }
 
     async createPatientRecord(ctx, patient_id){
-        // const id = 'doctor_test1';
+        patient_id = 'user_test_dummy';
         const record = {
             access_list: [],
             allowed_list: [],
             medical_info: [],
         }
 
-        return await ctx.stub.putState(patient_id, Buffer.from(JSON.stringify(record)));
+        await ctx.stub.putState(patient_id, Buffer.from(JSON.stringify(record)));
 
-        // return true
+        return patient_id
     }
 
     // async createDoctorRecord(){}
