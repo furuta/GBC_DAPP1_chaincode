@@ -93,6 +93,7 @@ class Record extends Contract {
     async createPatientRecord(ctx, patient_id){
         const dummy = 'user_dummy1';
         const record = {
+            docType = 'record',
             access_list: [],
             allowed_list: [],
             medical_info: [],
