@@ -306,14 +306,14 @@ class Record extends Contract {
         let cid = new ClientIdentity(ctx.stub);
         const id = cid.getID();
 
-        return Buffer.from(id);
+        return id.toString('utf8');
     }
 
     async getId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
         const id = cid.getMSPID();
 
-        return Buffer.from(id);
+        return id.toString('utf8');
     }
 
     // async getUserAttr(ctx) {
