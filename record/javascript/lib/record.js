@@ -103,13 +103,8 @@ class Record extends Contract {
             allowed_list: [],
             medical_info: [],
         }
-        // record.docType = 'record';
 
-        let cid = new ClientIdentity(ctx.stub);
-        // const id = cid.getID();
-        const idString = cid.getID();
-        const idParams = idString.split('::');
-        const id = idParams[1].split('CN=')[1];
+        const id = getCallerId(ctx);
 
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
@@ -316,11 +311,16 @@ class Record extends Contract {
     //     console.info('============= END : Create Car ===========');
     // }
 
-    async getUserId(ctx) {
+    getCallerId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
         const idString = cid.getID();
         const idParams = idString.toString().split('::');
-        const id = idParams[1].split('CN=')[1];
+        return idParams[1].split('CN=')[1];
+
+    }
+
+    async getUserId(ctx) {
+        const id = getCallerId(ctx);
 
         // "x509::{subject DN}::{issuer DN}"
         // x509
