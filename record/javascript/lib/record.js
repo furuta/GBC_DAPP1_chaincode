@@ -151,8 +151,7 @@ class Record extends Contract {
     //     return JSON.stringify(record.medical_info);
     // }
 
-    async getMedicalInfoByPatientId(ctx, patientId){
-        const caller = 'doctor_test1';
+    async getMedicalInfoByPatientId(ctx, requesterId, patientId){
         // Get record
         const recordAsByte = await ctx.stub.getState(patientId);
         if (!recordAsByte || recordAsByte.length === 0) {
@@ -162,10 +161,10 @@ class Record extends Contract {
 
         // Check permission
         const permission = record.access_list.filter(access => {
-            return access.id == caller;
+            return access.id == requesterId;
         });
         if (!permission || permission.length === 0) {
-            throw new Error(`${caller} is not allowed to modify the record`);
+            throw new Error(`${requesterId} is not allowed to modify the record`);
         }
 
         return JSON.stringify(record.medical_info);
@@ -307,14 +306,14 @@ class Record extends Contract {
         let cid = new ClientIdentity(ctx.stub);
         const id = cid.getID();
 
-        return id;
+        return Buffer.from(id);
     }
 
     async getId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
         const id = cid.getMSPID();
 
-        return id;
+        return Buffer.from(id);
     }
 
     // async getUserAttr(ctx) {
