@@ -104,7 +104,7 @@ class Record extends Contract {
             medical_info: [],
         }
 
-        const id = getCallerId(ctx);
+        const id = this.getCallerId(ctx);
 
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
@@ -313,21 +313,14 @@ class Record extends Contract {
 
     getCallerId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
-        const idString = cid.getID();
+        const idString = cid.getID();// "x509::{subject DN}::{issuer DN}"
         const idParams = idString.toString().split('::');
         return idParams[1].split('CN=')[1];
 
     }
 
     async getUserId(ctx) {
-        const id = getCallerId(ctx);
-
-        // "x509::{subject DN}::{issuer DN}"
-        // x509
-        // ::
-        // /OU=client/OU=org1/OU=department1/CN=user_test2
-        // ::
-        // /C=US/ST=California/L=San Francisco/O=org1.example.com/CN=ca.org1.example.com
+        const id = this.getCallerId(ctx);
 
         return id;
     }
