@@ -106,7 +106,9 @@ class Record extends Contract {
         // record.docType = 'record';
 
         let cid = new ClientIdentity(ctx.stub);
-        const id = cid.getID();
+        const idString = cid.getID();
+        const idParams = idString.split('::');
+        const id = idParams.split('CN=')[1];
 
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
@@ -115,40 +117,40 @@ class Record extends Contract {
 
     // async createDoctorRecord(){}
 
-    async writePatientRecord(ctx, patientId, info){
-        const caller = 'doctor_test1';
+    // async writePatientRecord(ctx, patientId, info){
+    //     const caller = 'doctor_test1';
 
-        let cid = new ClientIdentity(ctx.stub);
-        if (!cid.assertAttributeValue("role", "doctor")) {
-            throw new Error('Only doctor can write recored');
-        }
+    //     let cid = new ClientIdentity(ctx.stub);
+    //     if (!cid.assertAttributeValue("role", "doctor")) {
+    //         throw new Error('Only doctor can write recored');
+    //     }
 
-        // Get record
-        const recordAsByte = await ctx.stub.getState(patientId);
-        if (!recordAsByte || recordAsByte.length === 0) {
-            throw new Error(`${patientId} does not exist`);
-        }
-        const record = JSON.parse(recordAsByte.toString());
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(patientId);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${patientId} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
 
-        // Check permission
-        const permission = record.access_list.filter(access => {
-            return access.id == caller;
-        });
-        if (!permission || permission.length === 0) {
-            throw new Error(`${caller} is not allowed to modify the record`);
-        }
+    //     // Check permission
+    //     const permission = record.access_list.filter(access => {
+    //         return access.id == caller;
+    //     });
+    //     if (!permission || permission.length === 0) {
+    //         throw new Error(`${caller} is not allowed to modify the record`);
+    //     }
         
-        // Write record
-        var now = new Date();
-        const medical_info = {
-            date: now.format("yyyy/MM/dd HH:mm"),
-            writer_id: caller,
-            information: info,
-        }
-        record.medical_info.push(medical_info);
+    //     // Write record
+    //     var now = new Date();
+    //     const medical_info = {
+    //         date: now.format("yyyy/MM/dd HH:mm"),
+    //         writer_id: caller,
+    //         information: info,
+    //     }
+    //     record.medical_info.push(medical_info);
 
-        await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
-    }
+    //     await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
+    // }
 
     // async getMyMedicalInfo(ctx){
     //     const caller = 'user_test1';
@@ -315,7 +317,10 @@ class Record extends Contract {
 
     async getUserId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
-        const id, err = cid.getID();
+        const idString = cid.getID();
+        const idParams = idString.split('::');
+        const id = idParams.split('CN=')[1];
+
         // "x509::{subject DN}::{issuer DN}"
         // x509
         // ::
@@ -323,15 +328,15 @@ class Record extends Contract {
         // ::
         // /C=US/ST=California/L=San Francisco/O=org1.example.com/CN=ca.org1.example.com
 
-        return id.toString('utf8');
+        return id;
     }
 
-    async getId(ctx) {
-        let cid = new ClientIdentity(ctx.stub);
-        const id = cid.getMSPID();
+    // async getId(ctx) {
+    //     let cid = new ClientIdentity(ctx.stub);
+    //     const id = cid.getMSPID();
 
-        return id.toString('utf8');
-    }
+    //     return id.toString('utf8');
+    // }
 
     // async getUserAttr(ctx) {
     //     let cid = new ClientIdentity(ctx.stusb);
