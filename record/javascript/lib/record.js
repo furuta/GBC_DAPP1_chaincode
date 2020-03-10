@@ -149,7 +149,7 @@ class Record extends Contract {
 
         await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
 
-        return true;
+        return true;
     }
 
     async getMyMedicalInfo(ctx){
@@ -305,6 +305,32 @@ class Record extends Contract {
 
         return true;
     }
+
+    // async deletePermission(ctx, id){
+    //     const caller = 'user_test1';
+    //     // Get record
+    //     const recordAsByte = await ctx.stub.getState(caller);
+    //     if (!recordAsByte || recordAsByte.length === 0) {
+    //         throw new Error(`${caller} does not exist`);
+    //     }
+    //     const record = JSON.parse(recordAsByte.toString());
+
+    //     // Delete permission
+    //     const permission = record.access_list.filter(access => {
+    //         return access.id != id;
+    //     });
+    //     record.access_list = permission;
+
+    //     await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
+    //     return true;
+    // }
+
+
+
+
+
+
+
 
     getCallerId(ctx) {
         let cid = new ClientIdentity(ctx.stub);
