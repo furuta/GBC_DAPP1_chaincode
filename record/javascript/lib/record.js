@@ -181,36 +181,36 @@ class Record extends Contract {
         return JSON.stringify(record.medical_info);
     }
 
-    // async getDoctorList(ctx){
-    //     //  *all doctor role users*
-    //     const caller = 'user_test1';
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(caller);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${caller} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+    async getDoctorList(ctx){
+        //  *all doctor role users*
+        const caller = 'user_test1';
+        // Get record
+        const recordAsByte = await ctx.stub.getState(caller);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${caller} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
 
-    //     // Filter doctors
-    //     const doctors = record.access_list.filter(access => {
-    //         return access.role == 'doctor';
-    //     });
+        // Filter doctors
+        const doctors = record.access_list.filter(access => {
+            return access.role == 'doctor';
+        });
 
-    //     return JSON.stringify(doctors);
-    // }
+        return JSON.stringify(doctors);
+    }
 
-    // async getAccessList(ctx){
-    //     // *all permission users*
-    //     const caller = 'user_test1';
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(caller);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${caller} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+    async getAccessList(ctx){
+        // *all permission users*
+        const caller = 'user_test1';
+        // Get record
+        const recordAsByte = await ctx.stub.getState(caller);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${caller} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
 
-    //     return JSON.stringify(record.access_list);
-    // }
+        return JSON.stringify(record.access_list);
+    }
 
     // async checkMyPermissionStatus(ctx, patientId){
     //     // *check if I’m allowed by patientID*
@@ -275,6 +275,10 @@ class Record extends Contract {
     //     await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
     //     return true;
     // }
+
+
+
+
 
 
 
