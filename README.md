@@ -28,6 +28,10 @@ curl -sSL https://bit.ly/2ysbOFE | bash -s -- 1.4.6
 
 *Reboot instanse
 
+```
+cd fabric-samples/fabcar
+./startFabric.sh
+```
 
 ## chaincode
 ```
