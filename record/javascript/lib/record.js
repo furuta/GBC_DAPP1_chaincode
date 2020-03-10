@@ -290,6 +290,7 @@ class Record extends Contract {
                 role: role,
             });
         }
+
         const allowed = recordAllowed.allowed_list.filter(allowed => {
             return allowed.id == caller;
         });
@@ -306,24 +307,37 @@ class Record extends Contract {
         return true;
     }
 
-    // async deletePermission(ctx, id){
-    //     const caller = 'user_test1';
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(caller);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${caller} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+    async deletePermission(ctx, id){
+        const caller = this.getCallerId(ctx);
+        // Get record
+        const recordAsByte = await ctx.stub.getState(caller);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${caller} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
 
-    //     // Delete permission
-    //     const permission = record.access_list.filter(access => {
-    //         return access.id != id;
-    //     });
-    //     record.access_list = permission;
+        const recordAllowedAsByte = await ctx.stub.getState(id);
+        if (!recordAllowedAsByte || recordAllowedAsByte.length === 0) {
+            throw new Error(`${id} does not exist`);
+        }
+        const recordAllowed = JSON.parse(recordAllowedAsByte.toString());
 
-    //     await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
-    //     return true;
-    // }
+        // Delete permission
+        const permission = record.access_list.filter(access => {
+            return access.id != id;
+        });
+        record.access_list = permission;
+
+        const allowed = recordAllowed.allowed_list.filter(allowed => {
+            return allowed.id != caller;
+        });
+        recordAllowed.allowed_list = allowed;
+
+        await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
+        await ctx.stub.putState(id, Buffer.from(JSON.stringify(recordAllowed)));
+
+        return true;
+    }
 
 
 
