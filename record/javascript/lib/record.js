@@ -261,6 +261,10 @@ class Record extends Contract {
         return JSON.stringify(record.access_list);
     }
 
+    /**
+     * Return all allowed users
+     * @param {Context} ctx 
+     */
     async getAllowedList(ctx){// *all permission users*
         const caller = this.getCallerId(ctx);
 
