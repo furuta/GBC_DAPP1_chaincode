@@ -109,7 +109,7 @@ class Record extends Contract {
 
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
 
-        return id;
+        return true;
     }
 
     // async createDoctorRecord(){}
@@ -117,6 +117,7 @@ class Record extends Contract {
     async writePatientRecord(ctx, patientId, info){
         const caller = this.getCallerId(ctx);
 
+        // Doctor only
         let cid = new ClientIdentity(ctx.stub);
         if (!cid.assertAttributeValue("role", "doctor")) {
             throw new Error('Only doctor can write recored');
@@ -146,7 +147,9 @@ class Record extends Contract {
         }
         record.medical_info.push(medical_info);
 
-        return await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
+        await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
+
+        return true;
     }
 
     async getMyMedicalInfo(ctx){
@@ -183,9 +186,14 @@ class Record extends Contract {
         return JSON.stringify(record.medical_info);
     }
 
-    async getDoctorList(ctx){
-        //  *all doctor role users*
+    async getDoctorList(ctx){//  *all doctor role users*
         const caller = this.getCallerId(ctx);
+
+        // Patient only
+        let cid = new ClientIdentity(ctx.stub);
+        if (!cid.assertAttributeValue("role", "patient")) {
+            throw new Error('Only patient can get the doctor list');
+        }
 
         // Get record
         const recordAsByte = await ctx.stub.getState(caller);
@@ -202,9 +210,14 @@ class Record extends Contract {
         return JSON.stringify(doctors);
     }
 
-    async getAccessList(ctx){
-        // *all permission users*
+    async getAccessList(ctx){// *all permission users*
         const caller = this.getCallerId(ctx);
+
+        // Patient only
+        let cid = new ClientIdentity(ctx.stub);
+        if (!cid.assertAttributeValue("role", "patient")) {
+            throw new Error('Only patient can get the access list');
+        }
 
         // Get record
         const recordAsByte = await ctx.stub.getState(caller);
@@ -216,8 +229,7 @@ class Record extends Contract {
         return JSON.stringify(record.access_list);
     }
 
-    async getAllowedList(ctx){
-        // *all permission users*
+    async getAllowedList(ctx){// *all permission users*
         const caller = this.getCallerId(ctx);
 
         // Get record
@@ -230,8 +242,7 @@ class Record extends Contract {
         return JSON.stringify(record.allowed_list);
     }
 
-    async checkMyPermissionStatus(ctx, patientId){
-        // *check if I’m allowed by patientID*
+    async checkMyPermissionStatus(ctx, patientId){ // *check if I’m allowed by patientID*
         const caller = this.getCallerId(ctx);
 
         // Get record
@@ -252,29 +263,48 @@ class Record extends Contract {
         return true;
     }
 
-    // async addPermission(ctx, id, role){
-    //     const caller = 'user_test1';
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(caller);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${caller} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+    async addPermission(ctx, id, role){
+        const caller = this.getCallerId(ctx);
+        const callerRole = cid.getAttributeValue("role");
 
-    //     // Add permission
-    //     const permission = record.access_list.filter(access => {
-    //         return access.id == id;
-    //     });
-    //     if (!permission || permission.length === 0) {
-    //         record.access_list.push = {
-    //             role: role,
-    //             id: id,
-    //         }
-    //     }
+        // Get record
+        const recordAsByte = await ctx.stub.getState(caller);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${caller} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
 
-    //     await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
-    //     return true;
-    // }
+        const recordAllowedAsByte = await ctx.stub.getState(id);
+        if (!recordAllowedAsByte || recordAllowedAsByte.length === 0) {
+            throw new Error(`${id} does not exist`);
+        }
+        const recordAllowed = JSON.parse(recordAllowedAsByte.toString());
+
+        // Add permission
+        const permission = record.access_list.filter(access => {
+            return access.id == id;
+        });
+        if (!permission || permission.length === 0) {
+            record.access_list.push = {
+                id: id,
+                role: role,
+            }
+        }
+        const allowed = recordAllowed.allowed_list.filter(allowed => {
+            return allowed.id == caller;
+        });
+        if (!allowed || allowed.length === 0) {
+            recordAllowed.allowed_list.push = {
+                id: caller,
+                role: callerRole,
+            }
+        }
+
+        await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
+        await ctx.stub.putState(id, Buffer.from(JSON.stringify(recordAllowed)));
+
+        return true;
+    }
 
     // async deletePermission(ctx, id){
     //     const caller = 'user_test1';
