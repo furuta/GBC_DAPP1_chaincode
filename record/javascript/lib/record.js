@@ -99,6 +99,11 @@ class Record extends Contract {
      * @param {Context} ctx 
      */
     async createPatientRecord(ctx){
+        // Client only
+        let cid = new ClientIdentity(ctx.stub);
+        if (!cid.assertAttributeValue("role", "client")) {
+            throw new Error('Only client can make a recored here');
+        }
         const record = {
             access_list: [],
             allowed_list: [],
@@ -117,6 +122,12 @@ class Record extends Contract {
      * @param {Context} ctx 
      */
     async createDoctorRecord(ctx){
+        // Doctor only
+        let cid = new ClientIdentity(ctx.stub);
+        if (!cid.assertAttributeValue("role", "doctor")) {
+            throw new Error('Only doctor can make a recored here');
+        }
+
         const record = {
             allowed_list: [],
         }
