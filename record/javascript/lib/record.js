@@ -284,21 +284,21 @@ class Record extends Contract {
         const permission = record.access_list.filter(access => {
             return access.id == id;
         });
-        // if (!permission || permission.length === 0) {
-            record.access_list.push = {
+        if (!permission || permission.length === 0) {
+            record.access_list.push({
                 id: id,
                 role: role,
-            }
-        // }
+            });
+        }
         const allowed = recordAllowed.allowed_list.filter(allowed => {
             return allowed.id == caller;
         });
-        // if (!allowed || allowed.length === 0) {
-            recordAllowed.allowed_list.push = {
+        if (!allowed || allowed.length === 0) {
+            recordAllowed.allowed_list.push({
                 id: caller,
                 role: callerRole,
-            }
-        // }
+            });
+        }
 
         await ctx.stub.putState(caller, Buffer.from(JSON.stringify(record)));
         await ctx.stub.putState(id, Buffer.from(JSON.stringify(recordAllowed)));
