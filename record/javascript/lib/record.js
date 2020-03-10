@@ -6,6 +6,7 @@
 
 const { Contract } = require('fabric-contract-api');
 const ClientIdentity = require('fabric-shim').ClientIdentity;
+require('date-utils');
 
 class Record extends Contract {
 
@@ -113,40 +114,40 @@ class Record extends Contract {
 
     // async createDoctorRecord(){}
 
-    // async writePatientRecord(ctx, patientId, info){
-    //     const caller = 'doctor_test1';
+    async writePatientRecord(ctx, patientId, info){
+        const caller = this.getCallerId(ctx);
 
-    //     let cid = new ClientIdentity(ctx.stub);
-    //     if (!cid.assertAttributeValue("role", "doctor")) {
-    //         throw new Error('Only doctor can write recored');
-    //     }
+        let cid = new ClientIdentity(ctx.stub);
+        if (!cid.assertAttributeValue("role", "doctor")) {
+            throw new Error('Only doctor can write recored');
+        }
 
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(patientId);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${patientId} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+        // Get record
+        const recordAsByte = await ctx.stub.getState(patientId);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${patientId} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
 
-    //     // Check permission
-    //     const permission = record.access_list.filter(access => {
-    //         return access.id == caller;
-    //     });
-    //     if (!permission || permission.length === 0) {
-    //         throw new Error(`${caller} is not allowed to modify the record`);
-    //     }
+        // Check permission
+        const permission = record.access_list.filter(access => {
+            return access.id == caller;
+        });
+        if (!permission || permission.length === 0) {
+            throw new Error(`${caller} is not allowed to modify the record`);
+        }
         
-    //     // Write record
-    //     var now = new Date();
-    //     const medical_info = {
-    //         date: now.format("yyyy/MM/dd HH:mm"),
-    //         writer_id: caller,
-    //         information: info,
-    //     }
-    //     record.medical_info.push(medical_info);
+        // Write record
+        var now = new Date();
+        const medical_info = {
+            date: now.toFormat("YYYY/MM/DD PP HH:MI"),
+            writer_id: caller,
+            information: info,
+        }
+        record.medical_info.push(medical_info);
 
-    //     await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
-    // }
+        await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
+    }
 
     // async getMyMedicalInfo(ctx){
     //     const caller = 'user_test1';
