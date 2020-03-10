@@ -1,7 +1,3 @@
-/*
- * SPDX-License-Identifier: Apache-2.0
- */
-
 'use strict';
 
 const { Contract } = require('fabric-contract-api');
@@ -11,93 +7,97 @@ require('date-utils');
 class Record extends Contract {
 
     async initLedger(ctx) {
-        console.info('============= START : Initialize Ledger ===========');
-        const records = [
-            {
-                user_id: 'user_test1',
-                value: {
-                    access_list: [
-                        {
-                            role: 'doctor',
-                            id: 'doctor_test1'
-                        },
-                    ],
-                    allowed_list: [
-                        {
-                            role: 'patient',
-                            id: 'user_test2'
-                        },
-                    ],
-                    medical_info: [
-                        {
-                            date: '2020/01/01 12:00:00',
-                            writer_id: 'doctor_test1',
-                            information: 'fracture',
-                        }
-                    ]
-                }
-            },
-            {
-                user_id: 'user_test2',
-                value: {
-                    access_list: [
-                        {
-                            role: 'doctor',
-                            id: 'doctor_test2'
-                        },
-                        {
-                            role: 'patient',
-                            id: 'user_test1'
-                        }
-                    ],
-                    medical_info: [
-                        {
-                            date: '2020/01/01 12:00:00',
-                            writer_id: 'doctor_test2',
-                            information: 'cold',
-                        },
-                    ]
-                }
-            },
-            {
-                user_id: 'doctor_test1',
-                value: {
-                    allowed_list: [
-                        {
-                            role: 'patient',
-                            id: 'user_test1'
-                        },
-                    ],
-                }
-            },
-            {
-                user_id: 'doctor_test2',
-                value: {
-                    allowed_list: [
-                        {
-                            role: 'patient',
-                            id: 'user_test2'
-                        },
-                    ],
-                }
-            },
-            {
-                user_id: 'doctor_test3',
-                value: {
-                    access_list: [],
-                    allowed_list: [],
-                }
-            },
-        ];
+        // console.info('============= START : Initialize Ledger ===========');
+        // const records = [
+        //     {
+        //         user_id: 'user_test1',
+        //         value: {
+        //             access_list: [
+        //                 {
+        //                     role: 'doctor',
+        //                     id: 'doctor_test1'
+        //                 },
+        //             ],
+        //             allowed_list: [
+        //                 {
+        //                     role: 'patient',
+        //                     id: 'user_test2'
+        //                 },
+        //             ],
+        //             medical_info: [
+        //                 {
+        //                     date: '2020/01/01 12:00:00',
+        //                     writer_id: 'doctor_test1',
+        //                     information: 'fracture',
+        //                 }
+        //             ]
+        //         }
+        //     },
+        //     {
+        //         user_id: 'user_test2',
+        //         value: {
+        //             access_list: [
+        //                 {
+        //                     role: 'doctor',
+        //                     id: 'doctor_test2'
+        //                 },
+        //                 {
+        //                     role: 'patient',
+        //                     id: 'user_test1'
+        //                 }
+        //             ],
+        //             medical_info: [
+        //                 {
+        //                     date: '2020/01/01 12:00:00',
+        //                     writer_id: 'doctor_test2',
+        //                     information: 'cold',
+        //                 },
+        //             ]
+        //         }
+        //     },
+        //     {
+        //         user_id: 'doctor_test1',
+        //         value: {
+        //             allowed_list: [
+        //                 {
+        //                     role: 'patient',
+        //                     id: 'user_test1'
+        //                 },
+        //             ],
+        //         }
+        //     },
+        //     {
+        //         user_id: 'doctor_test2',
+        //         value: {
+        //             allowed_list: [
+        //                 {
+        //                     role: 'patient',
+        //                     id: 'user_test2'
+        //                 },
+        //             ],
+        //         }
+        //     },
+        //     {
+        //         user_id: 'doctor_test3',
+        //         value: {
+        //             access_list: [],
+        //             allowed_list: [],
+        //         }
+        //     },
+        // ];
 
-        for (let i = 0; i < records.length; i++) {
-            // records[i].value.docType = 'record';
-            await ctx.stub.putState(records[i].user_id, Buffer.from(JSON.stringify(records[i].value)));
-            console.info('Added <--> ', records[i]);
-        }
-        console.info('============= END : Initialize Ledger ===========');
+        // for (let i = 0; i < records.length; i++) {
+        //     // records[i].value.docType = 'record';
+        //     await ctx.stub.putState(records[i].user_id, Buffer.from(JSON.stringify(records[i].value)));
+        //     console.info('Added <--> ', records[i]);
+        // }
+        // console.info('============= END : Initialize Ledger ===========');
     }
 
+    /**
+     * Add new empty record for a caller
+     * @param {Context} ctx 
+     */
     async createPatientRecord(ctx){
         const record = {
             access_list: [],
@@ -112,8 +112,28 @@ class Record extends Contract {
         return true;
     }
 
-    // async createDoctorRecord(){}
+    /**
+     * Add new empty record for a doctor
+     * @param {Context} ctx 
+     */
+    async createDoctorRecord(ctx){
+        const record = {
+            allowed_list: [],
+        }
 
+        const id = this.getCallerId(ctx);
+
+        await ctx.stub.putState(id, Buffer.from(JSON.stringify(record)));
+
+        return true;
+    }
+
+    /**
+     * Add new medical information to a patient record
+     * @param {Context} ctx 
+     * @param {string} patientId 
+     * @param {string} info 
+     */
     async writePatientRecord(ctx, patientId, info){
         const caller = this.getCallerId(ctx);
 
@@ -152,6 +172,10 @@ class Record extends Contract {
         return true;
     }
 
+    /**
+     * Return caller's medical information
+     * @param {Context} ctx 
+     */
     async getMyMedicalInfo(ctx){
         const caller = this.getCallerId(ctx);
 
@@ -186,7 +210,11 @@ class Record extends Contract {
         return JSON.stringify(record.medical_info);
     }
 
-    async getDoctorList(ctx){//  *all doctor role users*
+    /**
+     * Return all doctor role users
+     * @param {Context} ctx 
+     */
+    async getDoctorList(ctx){
         const caller = this.getCallerId(ctx);
 
         // Patient only
@@ -210,7 +238,11 @@ class Record extends Contract {
         return JSON.stringify(doctors);
     }
 
-    async getAccessList(ctx){// *all permission users*
+    /**
+     * Return all permission users
+     * @param {Context} ctx 
+     */
+    async getAccessList(ctx){
         const caller = this.getCallerId(ctx);
 
         // Patient only
@@ -242,7 +274,12 @@ class Record extends Contract {
         return JSON.stringify(record.allowed_list);
     }
 
-    async checkMyPermissionStatus(ctx, patientId){ // *check if I’m allowed by patientID*
+    /**
+     * Check if I’m allowed by patientID
+     * @param {Context} ctx 
+     * @param {string} patientId target patient id
+     */
+    async checkMyPermissionStatus(ctx, patientId){
         const caller = this.getCallerId(ctx);
 
         // Get record
@@ -263,6 +300,12 @@ class Record extends Contract {
         return true;
     }
 
+    /**
+     * Add a user to access_list and allowed_list
+     * @param {Context} ctx 
+     * @param {string} id target user id
+     * @param {string} role target's role
+     */
     async addPermission(ctx, id, role){
         const caller = this.getCallerId(ctx);
         const callerRole = this.getCallerRole(ctx);
@@ -307,6 +350,11 @@ class Record extends Contract {
         return true;
     }
 
+    /**
+     * Delete a user from access_list and allowed_list
+     * @param {Context} ctx 
+     * @param {string} id target user id
+     */
     async deletePermission(ctx, id){
         const caller = this.getCallerId(ctx);
         // Get record
@@ -338,12 +386,6 @@ class Record extends Contract {
 
         return true;
     }
-
-
-
-
-
-
 
 
     getCallerId(ctx) {
