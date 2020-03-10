@@ -228,9 +228,9 @@ class Record extends Contract {
     async getDoctorList(ctx){
         const caller = this.getCallerId(ctx);
 
-        // Patient only
+        // Client only
         let cid = new ClientIdentity(ctx.stub);
-        if (!cid.assertAttributeValue("role", "patient")) {
+        if (!cid.assertAttributeValue("role", "client")) {
             throw new Error('Only patient can get the doctor list');
         }
 
@@ -256,9 +256,9 @@ class Record extends Contract {
     async getAccessList(ctx){
         const caller = this.getCallerId(ctx);
 
-        // Patient only
+        // Client only
         let cid = new ClientIdentity(ctx.stub);
-        if (!cid.assertAttributeValue("role", "patient")) {
+        if (!cid.assertAttributeValue("role", "client")) {
             throw new Error('Only patient can get the access list');
         }
 
