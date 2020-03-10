@@ -146,20 +146,21 @@ class Record extends Contract {
         }
         record.medical_info.push(medical_info);
 
-        await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
+        return await ctx.stub.putState(patientId, Buffer.from(JSON.stringify(record)));
     }
 
-    // async getMyMedicalInfo(ctx){
-    //     const caller = 'user_test1';
-    //     // Get record
-    //     const recordAsByte = await ctx.stub.getState(caller);
-    //     if (!recordAsByte || recordAsByte.length === 0) {
-    //         throw new Error(`${caller} does not exist`);
-    //     }
-    //     const record = JSON.parse(recordAsByte.toString());
+    async getMyMedicalInfo(ctx){
+        const caller = this.getCallerId(ctx);
 
-    //     return JSON.stringify(record.medical_info);
-    // }
+        // Get record
+        const recordAsByte = await ctx.stub.getState(caller);
+        if (!recordAsByte || recordAsByte.length === 0) {
+            throw new Error(`${caller} does not exist`);
+        }
+        const record = JSON.parse(recordAsByte.toString());
+
+        return JSON.stringify(record.medical_info);
+    }
 
     async getMedicalInfoByPatientId(ctx, requesterId, patientId){
         // Get record
