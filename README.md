@@ -64,8 +64,9 @@ exit
 
 ## API
 ```
-git clone https://github.com/leodinh/health-record-Front-End
-cd health-record-Front
+git clone https://github.com/leodinh/health-record-Back-End
+cd health-record-End
 npm install
+node enrollAdmin.js
 npm start
 ```
