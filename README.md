@@ -1,5 +1,6 @@
 # GBC_DAPP1_chaincode
 For the task of DAPP Ⅰ at GBC
+Design doc: https://docs.google.com/document/d/1ECdoAvJApid4XPIhOnwbva6IZ29c5XMfNZa_-jBboAY/edit?usp=sharing
 
 # Environment
 
