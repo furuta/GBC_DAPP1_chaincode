@@ -52,6 +52,7 @@ peer chaincode instantiate -o orderer.example.com:7050 --tls true --cafile /opt/
 ```
 
 * Upgrade
+
 Please count up version number
 ```
 peer chaincode install -l node -n record -v 0.1.2 -p /opt/gopath/src/github.com/chaincode/GBC_DAPP1_chaincode/record/javascript/
